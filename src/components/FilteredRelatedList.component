@@ -1,0 +1,26 @@
+<apex:component controller="FilteredRelatedListController">
+    <apex:attribute name="parentSObjectId" description="Id of the parent object" type="Id" assignTo="{!sObjectId}" required="true"/>
+    <apex:attribute name="childSObjectName" description="API name of the child sObject" type="String" assignTo="{!sObjectName}" required="true"/>
+    <apex:attribute name="parentSobjectLookup" description="API name of the parent sObject lookup field" type="String" assignTo="{!sObjectLookup}" required="true"/>
+    <apex:attribute name="theFieldSetName" description="API name of the field set" type="String" assignTo="{!fieldSetName}" required="true"/>
+    <apex:attribute name="filter" description="String to add to the SOQL WHERE clause" type="String" assignTo="{!filterString}" required="false"/>
+    <apex:pageMessages />
+    <apex:pageBlock >
+        <apex:pageBlockTable value="{!sObjects}" var="sObject">
+            <apex:repeat value="{!fieldSet.fields}" var="field">
+                <apex:column >
+                    <apex:facet name="header">{!field.label}</apex:facet>
+                    <apex:outputField styleClass="fieldSetField" value="{!sObject[field]}" rendered="{!NOT(field.fieldPath == 'Name')}" />
+                    <apex:outputLink value="/{!sObject.Id}" rendered="{!field.fieldPath == 'Name'}">{!sObject['Name']}</apex:outputLink>
+                </apex:column>
+            </apex:repeat>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" />
+    (function($){
+        'use strict';
+        $(document).ready( function(){
+            $('a').attr('target', '_parent');
+        });
+    }(jQuery));
+</apex:component>
