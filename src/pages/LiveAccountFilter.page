@@ -29,16 +29,20 @@
         var accountSearch = angular.module('accountSearch', []);
         accountSearch.controller('AccountSearchController', function ($scope) {
             $scope.getAccounts = function () {
-                LiveAccountFilterController.getAccounts( angular.element(document.querySelector('#searchInput')).val(), function( response, event ){
-                    if( event.status ) {
-                        $scope.accounts = [];
-                        for( var i = 0; i < response.length; i++ )
-                        {
-                            $scope.accounts.push( { name: response[i].Name, id:response[i].Id });
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.AccountInstantSearchController.getAccounts}',
+                    angular.element(document.querySelector('#searchInput')).val(),
+                    function( response, event ){
+                        if( event.status ) {
+                            $scope.accounts = [];
+                            for( var i = 0; i < response.length; i++ )
+                            {
+                                $scope.accounts.push( { name: response[i].Name, id:response[i].Id });
+                            }
+                            $scope.$apply();
                         }
-                        $scope.$apply();
-                    }
-                });
+                     }
+                );
             };
             $scope.clearResults = function () {
                 $scope.accounts = [];
